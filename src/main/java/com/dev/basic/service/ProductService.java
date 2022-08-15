@@ -18,11 +18,11 @@ public class ProductService {
     @Autowired
     ProductRepository productRepository;
 
-    public ProductDto addProduct (ProductDto productDto) throws Exception {
+    public ProductDto addProduct (ProductDto productDto, MultipartFile multipartFile) throws Exception {
         Product product = toEntity(productDto);
         product = productRepository.save(product);
-        //productDto.filePath = saveFile(productDto.file, product.getProductId());
-        //product.setFilePath(productDto.filePath);
+        productDto.filePath = saveFile(multipartFile, product.getProductId());
+        product.setFilePath(productDto.filePath);
         product = productRepository.save(product);
         return toResource(product);
     }
@@ -63,7 +63,7 @@ public class ProductService {
         return toResource(product);
     }
     public String  saveFile(MultipartFile multipartFile, long id) throws Exception {
-        String destination = "C:\\Users\\cemal\\Pictures" + id  + multipartFile.getOriginalFilename();
+        String destination = "C:\\Users\\cemal\\Pictures/" + id  + multipartFile.getOriginalFilename();
         File file = new File(destination);
         multipartFile.transferTo(file);
         return destination;

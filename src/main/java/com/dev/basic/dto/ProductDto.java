@@ -8,6 +8,6 @@ public class ProductDto {
     public String desc;
     public double amount;
     public long stock;
-    //public MultipartFile file;
+   public MultipartFile file;
     public String filePath;
 }

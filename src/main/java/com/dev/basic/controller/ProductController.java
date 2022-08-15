@@ -5,10 +5,13 @@ import com.dev.basic.dto.ProductDto;
 import com.dev.basic.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
 import java.util.List;
 
 @RestController
@@ -20,9 +23,12 @@ public class ProductController {
     @Autowired
     private HttpServletRequest request;
 
-    @PostMapping("/addProduct")
-    public ProductDto register(@RequestBody ProductDto productDto) throws Exception {
-        return productService.addProduct(productDto);
+    @PostMapping(value = "/addProduct", consumes = {
+            MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE
+    })
+    public ProductDto register( @RequestPart("Product") ProductDto productDto , @RequestPart("file") MultipartFile multipartFile) throws Exception {
+        return productService.addProduct(productDto, multipartFile);
     }
 
     @GetMapping("/listProduct")
