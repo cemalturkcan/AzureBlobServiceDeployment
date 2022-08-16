@@ -1,17 +1,15 @@
 package com.dev.basic.controller;
 
-import com.dev.basic.dto.File;
 import com.dev.basic.dto.ProductDto;
 import com.dev.basic.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
+
+
 import java.util.List;
 
 @RestController
@@ -20,8 +18,6 @@ import java.util.List;
 public class ProductController {
     @Autowired
     ProductService productService;
-    @Autowired
-    private HttpServletRequest request;
 
     @PostMapping(value = "/addProduct", consumes = {
             MediaType.APPLICATION_JSON_VALUE,
@@ -40,6 +36,17 @@ public class ProductController {
     public ProductDto findProduct(@PathVariable String productName) {
         return productService.findProductByName(productName);
     }
+
+
+   /* @PostMapping("/writeBlobFile")
+    public String writeBlobFile(@RequestPart MultipartFile file) throws IOException {
+        blobFile = file.getResource();
+        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
+            os.write(file.getBytes());
+        }
+        return "file was updated";
+    }*/
+
 
 
 

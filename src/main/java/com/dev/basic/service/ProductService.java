@@ -2,13 +2,12 @@ package com.dev.basic.service;
 
 import com.dev.basic.dto.ProductDto;
 import com.dev.basic.entity.Product;
-
 import com.dev.basic.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +16,15 @@ import java.util.List;
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
+    @Value("azure-blob://<your-container-name>/<your-blob-name>")
+    private Resource blobFile;
+    @Autowired
+    MyBlobService myBlobService;
 
     public ProductDto addProduct (ProductDto productDto, MultipartFile multipartFile) throws Exception {
         Product product = toEntity(productDto);
         product = productRepository.save(product);
-        productDto.filePath = saveFile(multipartFile, product.getProductId());
+        productDto.filePath = myBlobService.storeFile(product.getProductId()+ multipartFile.getOriginalFilename(),multipartFile.getInputStream(), multipartFile.getSize());
         product.setFilePath(productDto.filePath);
         product = productRepository.save(product);
         return toResource(product);
@@ -62,10 +65,18 @@ public class ProductService {
         Product product = productRepository.findProductByName(productName);
         return toResource(product);
     }
-    public String  saveFile(MultipartFile multipartFile, long id) throws Exception {
+   /* public String  saveFile(MultipartFile multipartFile, long id) throws Exception {
         String destination = "C:\\Users\\cemal\\Pictures/" + id  + multipartFile.getOriginalFilename();
         File file = new File(destination);
         multipartFile.transferTo(file);
         return destination;
     }
+      public String writeBlobFile(MultipartFile file) throws IOException {
+        try (OutputStream os = ((WritableResource) this.blobFile).getOutputStream()) {
+            os.write(file.getBytes());
+        }
+        return "file was updated";
+    }
+*/
+
 }
